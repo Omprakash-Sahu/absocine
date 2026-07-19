@@ -1,66 +1,38 @@
-import { useState, useEffect } from 'react';
+import Header from './components/Header';
+import BannerContainer from './components/BannerContainer';
 import MovieSection from './components/MovieSection';
+import useFetchMovies from './hooks/useFetchMovies';
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY
-
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+const trendingUrl = `https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`;
+const popularUrl = `https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`;
+const topRatedUrl = `https://api.themoviedb.org/3/movie/top_rated?api_key=${API_KEY}`;
+const nowPlayingUrl = `https://api.themoviedb.org/3/movie/now_playing?api_key=${API_KEY}`;
+const upcomingUrl = `https://api.themoviedb.org/3/movie/upcoming?api_key=${API_KEY}`;
 
 function App() {
 
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [popularMovies, setPopularMovies] = useState([]);
-  const [loadingTrendingMovies, setLoadingTrendingMovies] = useState(true);
-  const [loadingPopularMovies, setLoadingPopularMovies] = useState(true);
+  const { moviesList:trendingMovies, loading:loadingTrendingMovies } = useFetchMovies(trendingUrl);
+  const { moviesList:popularMovies, loading:loadingPopularMovies } = useFetchMovies(popularUrl);
+  const { moviesList:topRatedMovies, loading:loadingTopRatedMovies } = useFetchMovies(topRatedUrl);
+  const { moviesList:nowPlayingMovies, loading:loadingNowPlayingMovies } = useFetchMovies(nowPlayingUrl);
+  const { moviesList:upcomingMovies, loading:loadingUpcomingMovies } = useFetchMovies(upcomingUrl);
 
-  useEffect(() => {
-    async function fetchTrendingMovies() {
-      try {
-        const response = await fetch(`https://api.themoviedb.org/3/trending/movie/day?api_key=${API_KEY}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch trending movies.");
-        }
-        const data = await response.json();
-        setTrendingMovies(data.results);
-        setLoadingTrendingMovies(false);
-      } catch (error) {
-        console.log(error);
-        setLoadingTrendingMovies(false);
-      }
-    }
-
-    fetchTrendingMovies();
-  }, [])
-
-  useEffect(() => {
-    async function fetchPopularMovies() {
-      try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch popular movies.");
-        }
-        const data = await response.json();
-        setPopularMovies(data.results);
-        setLoadingPopularMovies(false);        
-      } catch (error) {
-        console.log(error);
-        setLoadingPopularMovies(false);
-      }
-    }
-
-    fetchPopularMovies();
-  }, [])
-
-  console.log(trendingMovies)
-  console.log(popularMovies)
-  if (loadingTrendingMovies || loadingPopularMovies) return <div>Loading...</div>;
+  console.log(upcomingMovies);
+  if (loadingTrendingMovies || loadingPopularMovies || loadingTopRatedMovies || loadingNowPlayingMovies || loadingUpcomingMovies) return <div>Loading...</div>  
   
   return (
-    <>
-      <MovieSection title="Trending" moviesList={trendingMovies}/>
+    <div className='bg-background flex flex-col'>
+      <Header />
+      <BannerContainer movie={trendingMovies[0]}/>
+      <MovieSection title="Now Playing" moviesList={nowPlayingMovies} />
+      <MovieSection title="Trending" moviesList={trendingMovies} />
       <MovieSection title="Popular" moviesList={popularMovies} />
-    </>
+      <MovieSection title="Top Rated" moviesList={topRatedMovies} />
+      <MovieSection title="Upcoming" moviesList={upcomingMovies} />
+    </div>
   )
 
 }
 
 export default App;
-
