@@ -1,4 +1,5 @@
 import Header from './components/Header';
+import SearchBox from './components/SearchBox';
 import BannerContainer from './components/BannerContainer';
 import MovieSection from './components/MovieSection';
 import useFetchMovies from './hooks/useFetchMovies';
