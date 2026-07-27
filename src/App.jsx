@@ -19,8 +19,10 @@ function App() {
   const { moviesList:nowPlayingMovies, loading:loadingNowPlayingMovies } = useFetchMovies(nowPlayingUrl);
   const { moviesList:upcomingMovies, loading:loadingUpcomingMovies } = useFetchMovies(upcomingUrl);
 
-  console.log(upcomingMovies);
-  if (loadingTrendingMovies || loadingPopularMovies || loadingTopRatedMovies || loadingNowPlayingMovies || loadingUpcomingMovies) return <div>Loading...</div>  
+  if (loadingTrendingMovies || loadingPopularMovies || loadingTopRatedMovies || loadingNowPlayingMovies || loadingUpcomingMovies) 
+    return (
+      <div className='bg-red-500 text-white text-center'>Loading...</div>
+    )
   
   return (
     <div className='bg-background flex flex-col'>

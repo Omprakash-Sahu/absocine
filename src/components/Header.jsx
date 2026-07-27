@@ -1,34 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DefaultHeaderContent from "./DefaultHeaderContent";
 import SearchBox from "./SearchBox";
+import FetchedMovieResults from "./FetchedMovieResults";
+import useFetchMovies from "../hooks/useFetchMovies";
+
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 function Header() {
-    const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+	const movieSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchTerm}`;
+	const { moviesList:searchedMovieResults, loading:loadingSearchedMovieResults } = useFetchMovies(movieSearchUrl);
+
+    if (!isSearchOpen) {
+        return (
+            <div className='sticky top-0 z-20 bg-background'>
+                <DefaultHeaderContent isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen}/>
+            </div>
+        )
+    }
 
     return (
         <div className='sticky top-0 z-20 bg-background'>
-            {isSearchOpen ? (
-                <SearchBox isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen}/>
+            <SearchBox isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen} setSearchTerm={setSearchTerm}/>
+            
+            {loadingSearchedMovieResults ? (
+             	<div className="bg-gray-500 text-white w-full px-3 py-1">Loading ...</div>
             ) : (
-                <DefaultHeaderContent isSearchOpen={isSearchOpen} setIsSearchOpen={setIsSearchOpen}/>
+                <FetchedMovieResults searchedMovieResults={searchedMovieResults} searchTerm={searchTerm}/>
             )}
         </div>
     )
-
 }
 
 export default Header;
-
-// return (
-//     <div className="flex items-center justify-between p-3 sticky top-0 z-10 bg-background">
-//         <a href="/" className='cursor-pointer'>
-//             <span className="text-white text-base font-bold">AbsoCine</span>
-//         </a>
-//         <div className="flex items-center gap-5">
-//             <a href="#" className="text-white text-sm font-bold">About</a>
-//             <button type="button" aria-label="Search" className='cursor-pointer'>
-//                 <Search className='w-5 h-5 text-white stroke-3'/>
-//             </button>
-//         </div>
-//     </div>
-// )

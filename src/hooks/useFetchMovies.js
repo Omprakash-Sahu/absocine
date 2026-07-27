@@ -13,6 +13,7 @@ function useFetchMovies(url) {
                 }
                 const data = await response.json();
                 setMoviesList(data.results);
+                // console.log(data.results);
                 setLoading(false);
             } catch (error) {
                 console.log(error);        
@@ -22,10 +23,7 @@ function useFetchMovies(url) {
 
         fetchMovies();
     }, [url]);
-
-    // console.log(moviesList);
     
-
     return { moviesList, loading };
 }
 
