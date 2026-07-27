@@ -8,12 +8,13 @@ function useFetchMovies(url) {
         async function fetchMovies() {
             try {
                 const response = await fetch(url);
+                let query = url.split('&')[1];
+                console.log(`Fetched for ${query}`);
                 if(!response.ok) {
                     throw new Error("Failed to fetch movies.");
                 }
                 const data = await response.json();
                 setMoviesList(data.results);
-                // console.log(data.results);
                 setLoading(false);
             } catch (error) {
                 console.log(error);        

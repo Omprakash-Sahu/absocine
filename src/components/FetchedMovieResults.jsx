@@ -1,9 +1,9 @@
-function FetchedMovieResults({ searchedMovieResults, searchTerm }) {
+function FetchedMovieResults({ searchedMovieResults, debouncedSearchTerm }) {
 
-    if (!searchTerm) return null;
+    if (!debouncedSearchTerm) return null;
 
     if (searchedMovieResults.length === 0) {
-        return <div className="bg-red-500 text-white w-full px-3 py-1">"{searchTerm}" not found.</div>
+        return <div className="bg-red-500 text-white w-full px-3 py-1">"{debouncedSearchTerm}" not found.</div>
     }
 
     return (
@@ -16,3 +16,4 @@ function FetchedMovieResults({ searchedMovieResults, searchTerm }) {
 }
 
 export default FetchedMovieResults;
+

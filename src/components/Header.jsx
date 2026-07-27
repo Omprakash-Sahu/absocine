@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import DefaultHeaderContent from "./DefaultHeaderContent";
 import SearchBox from "./SearchBox";
 import FetchedMovieResults from "./FetchedMovieResults";
@@ -9,8 +9,17 @@ const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 function Header() {
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-	const movieSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${searchTerm}`;
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+	const movieSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${debouncedSearchTerm}`;
 	const { moviesList:searchedMovieResults, loading:loadingSearchedMovieResults } = useFetchMovies(movieSearchUrl);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
     if (!isSearchOpen) {
         return (
@@ -27,7 +36,7 @@ function Header() {
             {loadingSearchedMovieResults ? (
              	<div className="bg-gray-500 text-white w-full px-3 py-1">Loading ...</div>
             ) : (
-                <FetchedMovieResults searchedMovieResults={searchedMovieResults} searchTerm={searchTerm}/>
+                <FetchedMovieResults searchedMovieResults={searchedMovieResults} debouncedSearchTerm={debouncedSearchTerm}/>
             )}
         </div>
     )
